@@ -45,25 +45,23 @@ public class AuthServiceImp implements AuthService {
 
     @Override
     public UserResponse register(RegisterRequest request) {
-        // Retrieve the employee associated with the given ID.
-        User userr = userRepository.findById(request.getId())
-                .orElseThrow(() -> new ResourceNotFoundException(User.class.getSimpleName(), "id", String.valueOf(request.getId())));
-
         // Fetch roles from the request and find them in the role repository.
         List<Role> roles = request.getRoles().stream()
                 .map(role -> roleRepository.findByRoleName(role.getRoleName())
                         .orElseThrow(() -> new ResourceNotFoundException(Role.class.getSimpleName(), "id_role", String.valueOf(role.getId()))))
                 .collect(Collectors.toList());
 
-        // Create the user entity with the associate roles, then save it to the database.
+        // Create the user entity with the associated roles and other fields, then save it to the database.
         var user = User.builder()
-                .username(userr.getUsername())
+                .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .roles(roles)
                 .build();
         userRepository.save(user);
         return UserMapper.INSTANCE.entityToResponse(user);
     }
+
+
 
     @Override
     public List<LoginResponse> login(LoginRequest request) {

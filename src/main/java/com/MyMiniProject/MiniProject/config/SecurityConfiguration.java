@@ -42,6 +42,7 @@ public class SecurityConfiguration {
 
                         // Allow unauthenticated access to API endpoints related to authentication
                         .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/auth/register").permitAll()
                         .requestMatchers("/auth/validate-token").permitAll()
                         // For all other requests, user must be authenticated
 
@@ -58,7 +59,7 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:1234")); // Remplacez par l'URL de votre application React
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // front application URL
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "token"));
         configuration.setAllowCredentials(true);
@@ -68,4 +69,5 @@ public class SecurityConfiguration {
 
         return source;
     }
+
 }

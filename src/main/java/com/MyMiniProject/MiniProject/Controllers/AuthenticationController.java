@@ -6,7 +6,6 @@ import com.MyMiniProject.MiniProject.Models.Responses.LoginResponse;
 import com.MyMiniProject.MiniProject.Models.Responses.UserResponse;
 import com.MyMiniProject.MiniProject.Services.AuthService;
 import com.MyMiniProject.MiniProject.Services.Impl.AuthServiceImp;
-import com.MyMiniProject.MiniProject.Services.Impl.UserServiceImpl;
 import com.MyMiniProject.MiniProject.config.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,7 +19,6 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-//@PreAuthorize("hasRole('SUPER_ADMIN')")
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
@@ -36,7 +34,6 @@ public class AuthenticationController {
 
 
     @PostMapping("/register")
-    @PreAuthorize("hasAuthority('SUPER_ADMIN_CREATE')")
     public ResponseEntity<UserResponse> register(@RequestBody RegisterRequest registerRequest) {
         return new ResponseEntity<>(authService.register(registerRequest), HttpStatus.CREATED);
     }
