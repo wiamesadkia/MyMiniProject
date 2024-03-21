@@ -10,6 +10,7 @@ import com.MyMiniProject.MiniProject.config.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,11 +28,19 @@ public class AuthenticationController {
     private final AuthService authService;
     private final AuthServiceImp userServiceImpl;
 
+
     @PostMapping("/login")
     public ResponseEntity<List<LoginResponse>> login(@RequestBody LoginRequest loginRequest) {
-        return new ResponseEntity<>(authService.login(loginRequest), HttpStatus.OK);
-    }
+        // Call the login method from the AuthService and retrieve the login responses
+        List<LoginResponse> loginResponses = authService.login(loginRequest);
 
+        // Create an instance of HttpHeaders to set the CORS headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Expose-Headers", "Authorization");
+        headers.add("Access-Control-Allow-Headers", "Authorization, X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept, X-Custom-header");
+        // Return the login responses with CORS headers and an HTTP status of OK
+        return ResponseEntity.ok().headers(headers).body(loginResponses);
+    }
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@RequestBody RegisterRequest registerRequest) {

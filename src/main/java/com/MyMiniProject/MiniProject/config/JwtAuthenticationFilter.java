@@ -32,6 +32,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NotNull HttpServletResponse response,
                                     @NotNull FilterChain filterChain)
             throws ServletException, IOException, ExpiredJwtException {
+
+        // Log the response headers before proceeding with the filter chain
+        response.getHeaderNames().forEach(headerName -> {
+            String headerValue = response.getHeader(headerName);
+            System.out.println(headerName + ": " + headerValue);
+        });
+
         System.out.printf("token to validdate :%s", request.getHeader("token"));
         if (request.getHeader("token") == null) {
 

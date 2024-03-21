@@ -15,6 +15,7 @@ import java.util.Optional;
 public interface AuthService {
 
     UserResponse register(RegisterRequest request);
+
     List<LoginResponse> login(LoginRequest request);
 
     UserResponse addRoleToUser(Long id_user, Long id_role);

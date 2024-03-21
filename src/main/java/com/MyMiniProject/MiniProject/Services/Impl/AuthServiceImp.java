@@ -65,29 +65,27 @@ public class AuthServiceImp implements AuthService {
 
     @Override
     public List<LoginResponse> login(LoginRequest request) {
-        // Authenticate the user with the provided credentials.
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(),
                 request.getPassword()
         ));
-        // Find the user based on the username.
+
+        // Get the authenticated user
         Optional<User> optionalUser = userRepository.findByUsername(request.getUsername());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             List<LoginResponse> loginResponses = new ArrayList<>();
             for (Role role : user.getRoles()) {
-                // Generate access and refresh tokens for each role associated with the user.
                 var roleAccessToken = jwtService.generateTokenWithRole(role, user);
                 var roleRefreshToken = jwtService.generateRefreshTokenWithRole(role, user);
-                // Build the login response for each role and add it to the list.
-                loginResponses.add(LoginResponse.builder().role(role.getRoleName()).accessToken(roleAccessToken).refreshToken(roleRefreshToken).build());
-                // Log the role information.
-                logger.info("Role: {} | Token: {} | refreshToken: {}", role.getRoleName(), roleAccessToken, roleRefreshToken);
+                loginResponses.add(LoginResponse.builder()
+                        .role(role.getRoleName())
+                        .accessToken(roleAccessToken)
+                        .refreshToken(roleRefreshToken)
+                        .build());
             }
             return loginResponses;
         } else {
-            // Handle the case where the user is not found
-            // For example, throw an exception or return an error response
             return Collections.emptyList();
         }
     }
