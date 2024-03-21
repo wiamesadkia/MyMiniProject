@@ -33,7 +33,6 @@ public class AuthenticationController {
     public ResponseEntity<List<LoginResponse>> login(@RequestBody LoginRequest loginRequest) {
         // Call the login method from the AuthService and retrieve the login responses
         List<LoginResponse> loginResponses = authService.login(loginRequest);
-
         // Create an instance of HttpHeaders to set the CORS headers
         HttpHeaders headers = new HttpHeaders();
         headers.add("Access-Control-Expose-Headers", "Authorization");
