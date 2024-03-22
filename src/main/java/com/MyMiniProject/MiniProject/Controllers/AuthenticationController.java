@@ -30,16 +30,17 @@ public class AuthenticationController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<List<LoginResponse>> login(@RequestBody LoginRequest loginRequest) {
-        // Call the login method from the AuthService and retrieve the login responses
-        List<LoginResponse> loginResponses = authService.login(loginRequest);
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+        // Call the login method from the AuthService and retrieve the login response
+        LoginResponse loginResponse = authService.login(loginRequest);
         // Create an instance of HttpHeaders to set the CORS headers
         HttpHeaders headers = new HttpHeaders();
         headers.add("Access-Control-Expose-Headers", "Authorization");
         headers.add("Access-Control-Allow-Headers", "Authorization, X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept, X-Custom-header");
-        // Return the login responses with CORS headers and an HTTP status of OK
-        return ResponseEntity.ok().headers(headers).body(loginResponses);
+        // Return the login response with CORS headers and an HTTP status of OK
+        return ResponseEntity.ok().headers(headers).body(loginResponse);
     }
+
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@RequestBody RegisterRequest registerRequest) {

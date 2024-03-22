@@ -43,6 +43,7 @@ public class AuthServiceImp implements AuthService {
     private final AuthenticationManager authenticationManager;
     Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
+
     @Override
     public UserResponse register(RegisterRequest request) {
         // Fetch roles from the request and find them in the role repository.
@@ -64,7 +65,8 @@ public class AuthServiceImp implements AuthService {
 
 
     @Override
-    public List<LoginResponse> login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
+        // Authenticate the user
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(),
                 request.getPassword()
@@ -74,21 +76,25 @@ public class AuthServiceImp implements AuthService {
         Optional<User> optionalUser = userRepository.findByUsername(request.getUsername());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            List<LoginResponse> loginResponses = new ArrayList<>();
-            for (Role role : user.getRoles()) {
-                var roleAccessToken = jwtService.generateTokenWithRole(role, user);
-                var roleRefreshToken = jwtService.generateRefreshTokenWithRole(role, user);
-                loginResponses.add(LoginResponse.builder()
+            Role role = user.getRoles().stream().findFirst().orElse(null); // Assuming a user has only one role
+            if (role != null) {
+                // Generate tokens for the user's role
+                String accessToken = jwtService.generateTokenWithRole(role, user);
+                String refreshToken = jwtService.generateRefreshTokenWithRole(role, user);
+                // Create and return LoginResponse
+                return LoginResponse.builder()
                         .role(role.getRoleName())
-                        .accessToken(roleAccessToken)
-                        .refreshToken(roleRefreshToken)
-                        .build());
+                        .accessToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .build();
             }
-            return loginResponses;
-        } else {
-            return Collections.emptyList();
         }
+        // Return null if the user is not found or has no role
+        return null;
     }
+
+
+
     @Override
     public UserResponse addRoleToUser(Long id_user, Long id_role) {
         Optional<User> findUser = userRepository.findById(id_user);

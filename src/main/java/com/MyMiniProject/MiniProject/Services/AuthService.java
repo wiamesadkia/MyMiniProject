@@ -9,14 +9,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 public interface AuthService {
 
     UserResponse register(RegisterRequest request);
 
-    List<LoginResponse> login(LoginRequest request);
+    LoginResponse login(LoginRequest request);
 
     UserResponse addRoleToUser(Long id_user, Long id_role);
 
